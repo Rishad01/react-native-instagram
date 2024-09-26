@@ -12,8 +12,10 @@ import {
   onSnapshot,
   deleteDoc
 } from "firebase/firestore";
+import { signOut } from "@react-native-firebase/auth";
 import { db, auth } from "../../firebase"; // Import Firebase setup
 import { setPosts, clearPosts } from "../../redux/slices/postsSlice";
+import { clearUser } from '../../redux/slices/useSlice';
 
 const Profile = (props) => {
   const dispatch = useDispatch();
@@ -123,6 +125,49 @@ const Profile = (props) => {
     }
   };
 
+  const handleLogout = async () => {
+    try {
+      await signOut(auth); 
+      dispatch(clearUser());
+      dispatch(clearPosts());
+      console.log('User logged out');
+    } catch (error) {
+      Alert.alert('Logout failed', error.message);
+    }
+  };
+
+  const handleAddComment = async (postId, userId) => {
+    try {
+      const commentRef = collection(db, 'posts', userId, 'userPosts', postId, 'comments');
+      await addDoc(commentRef, {
+        userId: auth.currentUser.uid,
+        comment: commentText,
+        creationTime: new Date(),
+      });
+      setCommentText(''); // Clear input after adding comment
+      fetchComments(postId, userId); // Fetch updated comments
+    } catch (error) {
+      console.error('Error adding comment: ', error);
+    }
+  };
+
+  const fetchComments = async (postId, userId) => {
+    try {
+      const commentsRef = collection(db, 'posts', userId, 'userPosts', postId, 'comments');
+      const q = query(commentsRef, orderBy('creationTime', 'desc'));
+      const commentSnapshot = await getDocs(q);
+      const fetchedComments = commentSnapshot.docs.map((doc) => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
+      setComments(fetchedComments);
+      setSelectedPostId(postId); // Set selected post for comment view
+    } catch (error) {
+      console.error('Error fetching comments: ', error);
+    }
+  };
+
+
   return (
     <View>
       {/* Display Profile Info */}
@@ -135,12 +180,13 @@ const Profile = (props) => {
         <Text>Loading profile info...</Text>
       )}
 
-      {props.route.params.uid !== currentUserId &&
+      {props.route.params.uid !== currentUserId ?
         (isFollowing ? (
           <Button title="Unfollow" onPress={handleUnfollow} />
         ) : (
           <Button title="Follow" onPress={handleFollow} />
-        ))}
+        )):
+        <Button title="Logout" onPress={handleLogout} />}
 
       {/* Display Posts */}
       {userPosts.length === 0 ? (
