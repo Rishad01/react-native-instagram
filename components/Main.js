@@ -64,6 +64,7 @@ const Main = () => {
                 size={26}
               />
             ),
+            tabBarLabel: "",
           }}
         />
     </Tab.Navigator>

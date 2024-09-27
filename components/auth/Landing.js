@@ -1,24 +1,24 @@
-import { Button, SafeAreaView, StyleSheet, View } from "react-native";
+import { Button, SafeAreaView, StyleSheet, TouchableOpacity,Text } from "react-native";
 import React from "react";
 import { useNavigation } from "@react-navigation/native";
-
+import tw from "twrnc";
 export default function Landing() {
   const navigation = useNavigation();
   return (
-    <SafeAreaView style={styles.container}>
-      <Button
-        title="Register"
-        onPress={() => {
-          navigation.navigate("Register");
-        }}
-      />
+    <SafeAreaView style={tw`flex-1 items-center justify-center bg-white`}>
+      <TouchableOpacity
+        style={tw`bg-blue-500 py-3 px-6 rounded m-2`} // Tailwind styles applied here
+        onPress={() => navigation.navigate("Register")}
+      >
+        <Text style={tw`text-white text-lg`}>Register</Text>
+      </TouchableOpacity>
       
-      <Button
-        title="Login"
-        onPress={() => {
-          navigation.navigate("Login");
-        }}
-      />
+      <TouchableOpacity
+        style={tw`bg-blue-500 py-3 px-6 rounded m-2`} // Tailwind styles applied here
+        onPress={() => navigation.navigate("Login")}
+      >
+        <Text style={tw`text-white text-lg`}>Login</Text>
+      </TouchableOpacity>
     </SafeAreaView>
   );
 }

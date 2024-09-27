@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, FlatList, Image, Button, TextInput } from "react-native";
+import { View, Text, FlatList, Image, Button, TextInput,TouchableOpacity } from "react-native";
 import { useSelector, useDispatch } from "react-redux";
 import {
   collection,
@@ -15,6 +15,7 @@ import {
 } from "firebase/firestore";
 import { auth, db } from "../../firebase"; // Adjust based on your Firebase setup
 import { fetchFollowingList } from "../../redux/slices/followingSlice"; // Adjust the import path
+import tw from "twrnc";
 
 const FeedScreen = () => {
   const dispatch = useDispatch(); // Get the dispatch function
@@ -179,34 +180,39 @@ const FeedScreen = () => {
     });
   };
   return (
-    <View style={{ flex: 1 }}>
+    <View style={tw`flex-1 justify-center bg-white`}>
       <Text>Feed Screen</Text>
       {loading && <Text>Loading...</Text>}
       {error && <Text>{error}</Text>}
       {!loading && !error && posts.length > 0 && (
-        <FlatList
+        <FlatList 
           data={posts}
           keyExtractor={(item) => item.id}
           renderItem={({ item }) => (
-            <View style={{ padding: 10 }}>
+            <View style={tw`bg-gray-200 m-1 p-4 rounded-sm`}>
               <Image
                 source={{ uri: item.downloadURL }}
-                style={{ width: 100, height: 100 }}
+                style={tw`w-full h-64`}
               />
               <Text>{item.caption}</Text>
               <Text>{formatDate(item.creation)}</Text>
               <Text>{item.likes?.length || 0} {item.likes?.length === 1 ? 'Like' : 'Likes'}</Text>
-              <Button
-                title={item.likes?.includes(auth.currentUser.uid) ? 'Unlike' : 'Like'}
+              <TouchableOpacity
+                style={tw`bg-blue-400 py-3 px-6 rounded m-2 justify-center items-center`}
                 onPress={() => handleLike(item.id, item.userId)}
-              />
-              <Button
-                title="View Comments"
-                onPress={() => fetchComments(item.id, item.userId)}
-              />
+              >
+              <Text style={tw`text-white`}>{item.likes?.includes(auth.currentUser.uid) ? 'Unlike' : 'Like'}</Text>
+              </TouchableOpacity>
+              <TouchableOpacity
+              style={tw`bg-blue-400 py-3 px-6 rounded m-2 justify-center items-center`}
+              onPress={() => fetchComments(item.id, item.userId)}>
+                <Text style={tw`text-white`}>View Comments</Text>
+              </TouchableOpacity>
               {/* Add comment section */}
               {selectedPostId === item.id && (
-                <View>
+                <View
+                style={tw`bg-white p-2 rounded-2`}
+                >
                   <Text>Comments:</Text>
                   <FlatList
                     data={comments}

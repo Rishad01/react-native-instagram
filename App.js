@@ -14,6 +14,7 @@ import Main from "./components/Main";
 import AddScreen from "./components/main/Add";
 import SaveScreen from "./components/main/Save";
 import ProfileScreen from "./components/main/Profile";
+import { SafeAreaProvider, SafeAreaView } from 'react-native-safe-area-context';
 
 
 const Stack = createNativeStackNavigator();
@@ -44,6 +45,7 @@ export default function App() {
 
   if (!loggedIn) {
     return (
+      <SafeAreaProvider>
       <Provider store={store}>
         <NavigationContainer>
           <Stack.Navigator initialRouteName="Landing">
@@ -57,6 +59,7 @@ export default function App() {
           </Stack.Navigator>
         </NavigationContainer>
       </Provider>
+      </SafeAreaProvider>
     );
   }
   if(loggedIn)
@@ -64,6 +67,7 @@ export default function App() {
   // const user = useSelector((state) => state.user.user);
   // console.log(user);
   return (
+    <SafeAreaProvider>
     <Provider store={store}>
     <NavigationContainer>
           <Stack.Navigator initialRouteName="MainScreen">
@@ -84,6 +88,7 @@ export default function App() {
         </NavigationContainer>
     
     </Provider>
+    </SafeAreaProvider>
   );
 }
 }

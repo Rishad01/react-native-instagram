@@ -1,10 +1,12 @@
-import { View, TextInput,Button, SafeAreaView,Alert } from "react-native";
+import { View, TextInput,Button,Alert } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { auth,db } from "../../firebase";
 import { doc, setDoc } from 'firebase/firestore';
 import { useDispatch } from "react-redux";
 import { setUser } from "../../redux/slices/useSlice";
 import { createUserWithEmailAndPassword} from '@firebase/auth';
 import { useState } from "react";
+import tw from "twrnc";
 
 const Register = () => {
     const dispatch=useDispatch();
@@ -49,20 +51,23 @@ const Register = () => {
         
 
 return (
-    <SafeAreaView>
+    <SafeAreaView style={tw`flex-1 justify-center items-center bg-white p-4`}>
         <TextInput
+            style={tw`w-full p-2 border border-gray-300 rounded mb-4`}
             placeholder="Enter your name"
             value={name}
             onChangeText={setName}
         />
 
         <TextInput
+            style={tw`w-full p-2 border border-gray-300 rounded mb-4`}   
             placeholder="Enter your email"
             value={email}
             onChangeText={setEmail}
         />
 
         <TextInput
+            style={tw`w-full p-2 border border-gray-300 rounded mb-4`}
             secureTextEntry={true}
             placeholder="Enter your password"
             value={password}

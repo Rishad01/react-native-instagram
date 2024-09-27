@@ -1,5 +1,6 @@
 import React, { useEffect, useState } from "react";
-import { View, Text, Image,Button } from "react-native";
+import {View, Text, Image,Button } from "react-native";
+import { SafeAreaView } from "react-native-safe-area-context";
 import { useDispatch, useSelector } from "react-redux";
 import {
   collection,
@@ -16,7 +17,8 @@ import { signOut } from "@react-native-firebase/auth";
 import { db, auth } from "../../firebase"; // Import Firebase setup
 import { setPosts, clearPosts } from "../../redux/slices/postsSlice";
 import { clearUser } from '../../redux/slices/useSlice';
-
+import tw from "twrnc";
+import { TouchableOpacity } from "react-native";
 const Profile = (props) => {
   const dispatch = useDispatch();
   const userPosts = useSelector((state) => state.posts.posts); // Get posts from Redux store
@@ -72,7 +74,9 @@ const Profile = (props) => {
         const posts = querySnapshot.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
+          creation: doc.creation ? doc.creation.toDate().toISOString() : null,
         }));
+        console.log(posts);
 
         // If the profile is the current user's, store the posts in Redux
         if (props.route.params.uid === currentUserId) {
@@ -127,7 +131,7 @@ const Profile = (props) => {
 
   const handleLogout = async () => {
     try {
-      await signOut(auth); 
+      await signOut(auth);  
       dispatch(clearUser());
       dispatch(clearPosts());
       console.log('User logged out');
@@ -169,8 +173,7 @@ const Profile = (props) => {
 
 
   return (
-    <View>
-      {/* Display Profile Info */}
+    <SafeAreaView style={tw`flex-1 items-center`}>
       {profileInfo ? (
         <View>
           <Text>Name: {profileInfo.name}</Text>
@@ -182,19 +185,35 @@ const Profile = (props) => {
 
       {props.route.params.uid !== currentUserId ?
         (isFollowing ? (
-          <Button title="Unfollow" onPress={handleUnfollow} />
+          <TouchableOpacity
+          style={tw`w-full p-2 border border-gray-300 rounded mb-4 bg-blue-500 items-center`}
+          onPress={handleUnfollow}>
+          <Text style={tw`color-white`}>Unfollow</Text>
+          </TouchableOpacity>
         ) : (
-          <Button title="Follow" onPress={handleFollow} />
+          <TouchableOpacity
+          style={tw`w-full p-2 border border-gray-300 rounded mb-4 bg-blue-500 items-center`}
+          onPress={handleFollow}>
+          <Text style={tw`color-white`}>Follow</Text>
+          </TouchableOpacity>
         )):
-        <Button title="Logout" onPress={handleLogout} />}
+        <TouchableOpacity
+          style={tw`w-full p-2 border border-gray-300 rounded mb-4 bg-red-500 items-center`}
+          onPress={handleLogout}>
+          <Text style={tw`color-white`}>Logout</Text>
+          </TouchableOpacity>
+      }
 
-      {/* Display Posts */}
+      <View 
+      style={tw`flex-row flex-wrap`}
+      >
       {userPosts.length === 0 ? (
         <Text>No posts to display.</Text>
       ) : (
         userPosts.map((post) => (
-          <View key={post.id}>
-            <Text>{post.caption}</Text>
+          <View 
+          style={tw`m-0`}
+          key={post.id}>
             <Image
               source={{ uri: post.downloadURL }}
               style={{ width: 100, height: 100 }}
@@ -202,7 +221,8 @@ const Profile = (props) => {
           </View>
         ))
       )}
-    </View>
+      </View>
+    </SafeAreaView>
   );
 };
 
