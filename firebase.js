@@ -2,15 +2,16 @@ import { initializeApp,getApps } from "@firebase/app";
 import { getAuth } from "@firebase/auth";
 import { getFirestore } from 'firebase/firestore';
 import { getStorage } from "firebase/storage";
+import { FIREBASE_API_KEY, FIREBASE_AUTH_DOMAIN, FIREBASE_PROJECT_ID, FIREBASE_STORAGE_BUCKET, FIREBASE_MESSAGING_SENDER_ID, FIREBASE_APP_ID, FIREBASE_MEASUREMENT_ID } from '@env';
 
 const firebaseConfig = {
-    apiKey: "AIzaSyAzlF5SABxxwK55qB5isdR5eZFQTn8R22o",
-    authDomain: "instagram-demo-2a4d8.firebaseapp.com",
-    projectId: "instagram-demo-2a4d8",
-    storageBucket: "instagram-demo-2a4d8.appspot.com",
-    messagingSenderId: "940541141788",
-    appId: "1:940541141788:web:2d41ce2f7f7a1b7e1c90d9",
-    measurementId: "G-MSS9NFX1VC"
+    apiKey: FIREBASE_API_KEY,
+    authDomain: FIREBASE_AUTH_DOMAIN,
+    projectId: FIREBASE_PROJECT_ID,
+    storageBucket: FIREBASE_STORAGE_BUCKET,
+    messagingSenderId: FIREBASE_MESSAGING_SENDER_ID,
+    appId: FIREBASE_APP_ID,
+    measurementId: FIREBASE_MEASUREMENT_ID
   };
   
 
